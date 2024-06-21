@@ -92,6 +92,30 @@ def translateAnswerSet(answer_set, interpretation_rules, num_of_set=0):
     interpreted_strings = [traslator(item, interpretation_rules) for item in answer_set[num_of_set]]
     return interpreted_strings
 
+def makePrompt(nl_answerset, nl_observations):
+    final_prompt = ""
+
+    final_prompt += llm_constants.PREPROMPT_2
+
+    final_prompt += llm_constants.PLAN_PREPROMT
+    for item in nl_answerset:
+        final_prompt += (item + "\n")
+    
+    final_prompt += "\n"
+
+    final_prompt += llm_constants.OBSERVATION_PREPROMT
+    for item in nl_observations:
+        final_prompt += (item + "\n")
+
+    final_prompt += "\n"
+
+    final_prompt += llm_constants.START_LOCATION
+    final_prompt += llm_constants.ADJACENT_LOCATIONS
+
+    final_prompt += llm_constants.FIRST_QUERY
+
+    return final_prompt
+    
 
 # ----------------------------------------------------------------------
 # - Main ---------------------------------------------------------------
@@ -99,21 +123,22 @@ def translateAnswerSet(answer_set, interpretation_rules, num_of_set=0):
 if __name__ == "__main__":
     ASP_FILE_PATH = "ASP.pl"
 
-    answer_sets_file = solveASP(ASP_FILE_PATH)
-    answer_sets_file = [['move(B)', 'pickup(1)', 'move(C)', 'move(E)', 'release(1)', 'pickup(2)', 'move(C)', 'move(B)', 'release(2)']]
-
-    has_answerset = printAnswerSet(answer_sets_file)
+    answer_sets_file = llm_constants.TEST_PLAN              # TODO Put solver here  # answer_sets_file = solveASP(ASP_FILE_PATH)
+    # has_answerset = printAnswerSet(answer_sets_file)
 
     if len(answer_sets_file[0]) != 0: # only translate if an answerset is given
         translated_answerset = translateAnswerSet(answer_sets_file, llm_constants.INTERPRETER_RULES, 0)
-        print(translated_answerset)
+        
     else:
         print("No answerset to translate!")
 
 
-
+    # for item in llm_constants.TEST_OBSERVATION:
+    #     print(item)
     # response = "\nNOTE: The LLM is currently not used, uncommend function call to acitvate it!\n"
     # response = queryLLM(prompt="Write a letter about flowers for my sister!", pre_prompt="") 
     # print(response)
     
-    pre_prompt = ""
+    final_promt = makePrompt(translated_answerset, llm_constants.TEST_OBSERVATION)
+
+    print(final_promt)
