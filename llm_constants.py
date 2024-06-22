@@ -72,27 +72,25 @@ The robot can perform the following actions, each with specific preconditions an
 
 2. Load
    - Description: The robot can load a packet from its current location.
-   - Precondition: The packet must be at the robot's current location.
+   - Precondition: The packet must be at the robot's current location and the robot can only carry on package at the time.
    - Effect: The robot picks up the packet.
    - Possible Failure: The robot fails to pick up the packet.
 
 3. Release
    - Description: The robot can unload a packet at its current location.
-   - Precondition: The robot must be carrying a packet.
+   - Precondition: The robot must be carrying a packet, but can not carry more than one package.
    - Effect: The robot places the packet at the current location.
    - Possible Failure: The robot fails to put down the packet.
 
-Additional Constraints and Events:
-- The robot can carry only one packet at a time.
-- Only the robot can execute actions in this domain.
+4. Sensing:
+   - Sensing occurs only when the robot moves to a location.
+   - The robot can only observe packets when it is in the same location as the packet.
+   
+Additional Constraints:
+- The robot can only execute actions in this domain.
 
-Potential Issues:
-- Action Failures: Actions such as move, load, and release can fail, leading to various outcomes (e.g., the robot staying in place or failing to pick up a packet).
-- Exogenous Events: External entities (e.g., a wumpus) may randomly move packets to new locations, independent of the robot's actions.
-
-Robot's Sensing Capabilities:
-- The robot can only observe packets when it is in the same location as the packet.
-- Sensing occurs only when the robot enters a location.
+Exogenous Events: 
+- External entities (e.g., a wumpus) may randomly move packets to new locations, independent of the robot's actions.
 
 Instructions for AI Assistance:
 Your goal is to verify that the actions of a given plan and the observations are consistent within the logistics domain. Specifically:
@@ -101,8 +99,8 @@ Your goal is to verify that the actions of a given plan and the observations are
 3. Check Observations: Ensure that the observations align with the robot's limited sensing capabilities and any changes in the environment.
 4. Handle Exogenous Events: Take into account external events that may affect the location of packets and verify their impact on the plan.
 
-Your task is to ensure the consistency and validity of the plan's actions and observations within the constraints and potential issues of the logistics domain.\n
 """
+# Your task is to ensure the consistency and validity of the plan's actions and observations within the constraints and potential issues of the logistics domain.\n
 
 START_LOCATION = "The robot starts at position A.\n\n"
 
@@ -118,14 +116,5 @@ SECOND_QUERY = "What action failed so that the package is at location b after st
 
 THIRED_QUERY = "Please write your final answer in the following form: It failed due to action n.\n"
 
-INTERPRETER_RULES = {
-    'move': lambda x: f"The agent moves to location {x} from the previous location.",
-    'pickup': lambda x: f"The agent picks up package {x} at the current location.",
-    'release': lambda x: f"The agent releases package {x} at the current location."
-}
-
-TEST_PLAN = [['move(B)', 'pickup(1)', 'move(C)', 'move(E)', 'release(1)', 'pickup(2)', 'move(C)', 'move(B)', 'release(2)']]
-
-TEST_OBSERVATION = ["Package 1 is at location b", 'No package is at location c', 'Package 2 is at location e', 'No package is at location c', 'Package 1 is at location b']
 
 how_to_promt = "https://chatgpt.com/share/27920835-c370-46d4-94a5-3f8d70877e44"

@@ -3,6 +3,7 @@ import clingo
 import replicate
 
 import llm_constants
+import asp_constants
 
 REPLICATE_API_TOKEN = "r8_6cYYhhQxEK7CuFzLDx061KjxL0hNWVg3aQGcl"
 os.environ["REPLICATE_API_TOKEN"] = REPLICATE_API_TOKEN
@@ -121,13 +122,14 @@ def makePrompt(nl_answerset, nl_observations):
 # - Main ---------------------------------------------------------------
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
+    
     ASP_FILE_PATH = "ASP.pl"
 
-    answer_sets_file = llm_constants.TEST_PLAN              # TODO Put solver here  # answer_sets_file = solveASP(ASP_FILE_PATH)
+    answer_sets_file = asp_constants.TEST_PLAN              # TODO Put solver here  # answer_sets_file = solveASP(ASP_FILE_PATH)
     # has_answerset = printAnswerSet(answer_sets_file)
 
     if len(answer_sets_file[0]) != 0: # only translate if an answerset is given
-        translated_answerset = translateAnswerSet(answer_sets_file, llm_constants.INTERPRETER_RULES, 0)
+        translated_answerset = translateAnswerSet(answer_sets_file, asp_constants.INTERPRETER_RULES, 0)
         
     else:
         print("No answerset to translate!")
@@ -139,6 +141,6 @@ if __name__ == "__main__":
     # response = queryLLM(prompt="Write a letter about flowers for my sister!", pre_prompt="") 
     # print(response)
     
-    final_promt = makePrompt(translated_answerset, llm_constants.TEST_OBSERVATION)
+    final_promt = makePrompt(translated_answerset, asp_constants.TEST_OBSERVATION)
 
     print(final_promt)
