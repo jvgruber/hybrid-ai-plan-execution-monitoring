@@ -2,13 +2,16 @@ import os
 import clingo
 import replicate
 
-REPLICATE_API_TOKEN = "r8_FhBHx8c9jyv0xfY2bv1TGtMX5vK4eHb2tSAdv"
+import llm_constants
+import asp_constants
+
+REPLICATE_API_TOKEN = "r8_6cYYhhQxEK7CuFzLDx061KjxL0hNWVg3aQGcl"
 os.environ["REPLICATE_API_TOKEN"] = REPLICATE_API_TOKEN
 
 # ----------------------------------------------------------------------
 # - Function Definitoins -----------------------------------------------
 # ----------------------------------------------------------------------
-def queryLLM(prompt="", pre_prompt="", temperature=0.75,top_p=1.00, max_length=1023, repetition_penalty=1):
+def queryLLM(prompt="", pre_prompt="", temperature=0.75,top_p=1.00, max_new_tokens=500, repetition_penalty=1):
     if len(prompt) == 0:
         print("Please set a Promt, default is empty!")
         return ""
@@ -19,7 +22,7 @@ def queryLLM(prompt="", pre_prompt="", temperature=0.75,top_p=1.00, max_length=1
                 "prompt": f"{pre_prompt} {prompt}",
                 "temperature": temperature,
                 "top_p": top_p,
-                "max_length": max_length,
+                "max_new_tokens": max_new_tokens,
                 "repetition_penalty": repetition_penalty
             }
         )
@@ -35,6 +38,10 @@ def queryLLM(prompt="", pre_prompt="", temperature=0.75,top_p=1.00, max_length=1
     
 
 def solveASP(file_path):
+    """
+    This function takes in an ansolute or relativ path to a .pl file with and answer set program. This programm will be read and solved using clingo.
+    Retuns a list of lists with the answer sets.
+    """
     absolute_path = os.path.abspath(file_path)
 
     # Check if the file exists
@@ -60,25 +67,80 @@ def solveASP(file_path):
   
 
 def printAnswerSet(answer_sets):
+    """
+    Takes in the anser sets form the solfeASP(...) functions an wirtes them to the console. The index is the number of the answer set.
+    Which can be used in e.g. the translateAnswerSet(...) function to translate the answerset to natural language.
+    """
     if answer_sets:
         print("Satisfiable")
         print("Answer Sets:")
 
         for i, answer_set in enumerate(answer_sets):
-            print(f"Answer Set {i + 1}: {answer_set}")
+            print(f"Answer Set {i}: {answer_set}")
+        return True
     else:
         print("Unsatisfiable")
+        return False
+
+
+def traslator(item, interpretation_rules):
+    relation, rest = item.split('(', 1)
+    args = rest.rstrip(')').split(',')
+    return interpretation_rules[relation](*args)
+
+
+def translateAnswerSet(answer_set, interpretation_rules, num_of_set=0):  
+    interpreted_strings = [traslator(item, interpretation_rules) for item in answer_set[num_of_set]]
+    return interpreted_strings
+
+def makePrompt(nl_answerset, nl_observations):
+    final_prompt = ""
+
+    final_prompt += llm_constants.PREPROMPT_2
+
+    final_prompt += llm_constants.PLAN_PREPROMT
+    for item in nl_answerset:
+        final_prompt += (item + "\n")
+    
+    final_prompt += "\n"
+
+    final_prompt += llm_constants.OBSERVATION_PREPROMT
+    for item in nl_observations:
+        final_prompt += (item + "\n")
+
+    final_prompt += "\n"
+
+    final_prompt += llm_constants.START_LOCATION
+    final_prompt += llm_constants.ADJACENT_LOCATIONS
+
+    final_prompt += llm_constants.FIRST_QUERY
+
+    return final_prompt
+    
 
 # ----------------------------------------------------------------------
 # - Main ---------------------------------------------------------------
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
-    aps_file_path = "ASP.pl"
-
-    answer_sets_file = solveASP(aps_file_path)
-    printAnswerSet(answer_sets_file)
-
-    response = "\nNOTE: The LLM is currently not used, uncommend function call to acitvate it!\n"
-    # response = queryLLM(prompt="Write a letter about flowers for my sister!", pre_prompt="") 
-    print(response)
     
+    ASP_FILE_PATH = "ASP.pl"
+
+    answer_sets_file = asp_constants.TEST_PLAN              # TODO Put solver here  # answer_sets_file = solveASP(ASP_FILE_PATH)
+    # has_answerset = printAnswerSet(answer_sets_file)
+
+    if len(answer_sets_file[0]) != 0: # only translate if an answerset is given
+        translated_answerset = translateAnswerSet(answer_sets_file, asp_constants.INTERPRETER_RULES, 0)
+        
+    else:
+        print("No answerset to translate!")
+
+
+    # for item in llm_constants.TEST_OBSERVATION:
+    #     print(item)
+    # response = "\nNOTE: The LLM is currently not used, uncommend function call to acitvate it!\n"
+    # response = queryLLM(prompt="Write a letter about flowers for my sister!", pre_prompt="") 
+    # print(response)
+    
+    final_promt = makePrompt(translated_answerset, asp_constants.TEST_OBSERVATION)
+
+    print(final_promt)
