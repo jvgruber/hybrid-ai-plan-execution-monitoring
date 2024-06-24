@@ -22,28 +22,29 @@ def queryLLM(prompt="", model="llama3", show_stream=False):
     # except Exception as e:
     # 	return f"An error occurred: {e}"
 
-
-def makePrompt(nl_answerset, nl_observations):
+def makePrompt(preprompt="", plan_prepromtpt="", plan=[""], observation_prepropt="" ,observaations=[""], faults_and_causes="", start_location="", adjacent_locations="", query=""):
     final_prompt = ""
 
-    final_prompt += llm_constants.PREPROMPT_2
+    final_prompt += preprompt
 
-    final_prompt += llm_constants.PLAN_PREPROMT
-    for item in nl_answerset:
+    final_prompt += plan_prepromtpt
+    for item in plan:
         final_prompt += (item + "\n")
     
     final_prompt += "\n"
 
-    final_prompt += llm_constants.OBSERVATION_PREPROMT
-    for item in nl_observations:
+    final_prompt += observation_prepropt
+    for item in observaations:
         final_prompt += (item + "\n")
 
     final_prompt += "\n"
 
-    final_prompt += llm_constants.START_LOCATION
-    final_prompt += llm_constants.ADJACENT_LOCATIONS
+    final_prompt += faults_and_causes
 
-    final_prompt += llm_constants.FIRST_QUERY
+    final_prompt += start_location
+    final_prompt += adjacent_locations
+
+    final_prompt += query
 
     return final_prompt
 
@@ -131,7 +132,22 @@ if __name__ == "__main__":
     # response = queryLLM(prompt="Write a letter about flowers for my sister!", pre_prompt="") 
     # print(response)
     
-    final_prompt = makePrompt(translated_answerset, asp_constants.TEST_OBSERVATION)    
+    # final_prompt = makePrompt(
+    #                 llm_constants.PREPROMPT_3,
+    #                 llm_constants.PLAN_PREPROMT, 
+    #                 translated_answerset, 
+    #                 llm_constants.OBSERVATION_PREPROMT,
+    #                 asp_constants.TEST_OBSERVATION, 
+    #                 llm_constants.FAULTS_AND_CAUSES, 
+    #                 llm_constants.START_LOCATION, 
+    #                 llm_constants.ADJACENT_LOCATIONS,
+    #                 llm_constants.FIRST_QUERY + llm_constants.OUTPUT
+    #                 )   
+
+    final_prompt = makePrompt(llm_constants.TEST)
+
+    print(final_prompt)
+    print("\n--------------------------------------------------------------------------------------------\n") 
     response = queryLLM(final_prompt, show_stream=llm_constants.SHOW_STREAM)
 
 
