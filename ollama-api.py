@@ -50,7 +50,13 @@ def makePrompt(nl_answerset, nl_observations):
 def translator(item, interpretation_rules):
     relation, rest = item.split('(', 1)
     args = rest.rstrip(')').split(',')
-    return interpretation_rules[relation](*args)
+    try:
+        return interpretation_rules[relation](*args)
+    except Exception as e:
+        print(f"Error: No translation rule is defined for the {e} predicate.")
+        quit()
+
+    return translation
 
 def translateAnswerSet(answer_set, interpretation_rules, num_of_set=0):  
     interpreted_strings = [translator(item, interpretation_rules) for item in answer_set[num_of_set]]
@@ -125,7 +131,7 @@ if __name__ == "__main__":
     # response = queryLLM(prompt="Write a letter about flowers for my sister!", pre_prompt="") 
     # print(response)
     
-    final_prompt = makePrompt(translated_answerset, asp_constants.TEST_OBSERVATION)
+    final_prompt = makePrompt(translated_answerset, asp_constants.TEST_OBSERVATION)    
     response = queryLLM(final_prompt, show_stream=llm_constants.SHOW_STREAM)
 
 

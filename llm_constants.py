@@ -1,6 +1,7 @@
 # TODO: Rewrite: The AI assistant is responsable to check if the actions and the observations are consistent. To detect the rood cause.
 SHOW_STREAM = True
-PREPROMPT = """
+
+PREPROMPT_1 = """
 You are an AI assistant responsible for guiding a robot within a logistics domain. This domain includes the following elements:
 
 - Robot: An autonomous entity capable of performing actions.
@@ -94,7 +95,8 @@ Exogenous Events:
 - External entities (e.g., a wumpus) may randomly move packets to new locations, independent of the robot's actions.
 
 Instructions for AI Assistance:
-Your goal is to verify that the actions of a given plan and the observations are consistent within the logistics domain. Specifically:
+Your goal is to verify that the actions of a given plan and the observations are consistent within the logistics domain. 
+Specifically:
 1. Evaluate Preconditions: Ensure that the preconditions for each action are met before the action is executed.
 2. Verify Action Consistency: Confirm that the effects of each action are consistent with the expected outcomes.
 3. Check Observations: Ensure that the observations align with the robot's limited sensing capabilities and any changes in the environment.
