@@ -1,6 +1,6 @@
 % executes, packets, locations
 % move(t, location, location) - adjacent(t, location, location)
-% load(t, packet, location)  - at(t, packet, location)
+% load(t, packet, location)  - robot_at(t, packet, location)
 % release(t, packet, location) - carry(t, packet, location)
 % maximum one packet at same time
 % 
@@ -10,24 +10,36 @@
 % output should be an explaination to the observations
 
 % Define time steps
-time(0..5).
+time(0..6).
 
 % INIT
-at(0,a).
-ploc(0, one, a).
+robot_at(0,a).
+packet_at(0, one, b).
+packet_at(0, two, e).
+packet_at(0, three, f).
 carry(0, empty).
-% ploc(0, two, e).
+% packet_at(0, two, e).
 
 % GOAL
-ploc(5, one, b).
-at(5, a).
-carry(2, empty).
+packet_at(6, one, c).
+robot_at(6, d).
+carry(5, empty).
+
+% PLAN
+% execute(0,load(one)).
+% execute(1,move(b)).
+% execute(2,release(one)).
+% execute(3,move(c)).
+% execute(6,wait).
 
 % Define locations
-location(a; b; c).
+location(a; b; c; d; e; f; g; h; i).
+
+% Original adjacency pairs
+adjacent(a,b; b,c; c,e; e,d; a,d; d,f; f,h; h,g; h,i).
 
 % Define packets
-packet(empty; one;).
+packet(empty; one; two; three).
 
 % Define actions
 action(move(X)) :- location(X).
@@ -40,47 +52,65 @@ action(wait).
 :- execute(T, X), execute(T, Y), X!=Y.
 
 % Definition: robot at location
-1 { at(T, A) : location(A) } 1 :- time(T).
-:- at(T, A), at(T, B), A!=B.
+1 { robot_at(T, A) : location(A) } 1 :- time(T).
+:- robot_at(T, A), robot_at(T, B), A!=B.
 
 % Definition: packet at location
-1 { ploc(T, A, X) : location(X) } 1 :- time(T), packet(A), A!=empty.
-:- ploc(T, A, X), ploc(T, A, Y), X!=Y, A!=empty.
-ploc(T, empty, X) :- time(T), location(X).
+1 { packet_at(T, A, X) : location(X) } 1 :- time(T), packet(A), A!=empty.
+:- packet_at(T, A, X), packet_at(T, A, Y), X!=Y, A!=empty.
+% packet_at(T, empty, X) :- time(T), location(X).
+:- packet_at(T, empty, X).
+
+% Definition: Adjacent Locations
+adjacent(Y,X) :- adjacent(X,Y), location(X), location(Y).
 
 % Definition: execute move action
-execute(T, move(B)) :- time(T), location(A), location(B), at(T, A), at(T+1, B), A!=B.
-at(T+1, B) :- time(T), location(A), location(B), execute(T, move(B)).
-A!=B :- time(T), location(A), location(B), at(T, A), execute(T, move(B)).
+execute(T, move(B)) :- time(T), location(A), location(B), robot_at(T, A), robot_at(T+1, B), A!=B.
+robot_at(T+1, B) :- execute(T, move(B)).
+A!=B :- robot_at(T, A), execute(T, move(B)).
+:- execute(T, move(B)), robot_at(T, A), not adjacent(A, B).
 
 % Definition: packet carry
 1 { carry(T, A) : packet(A) } 1 :- time(T).
 :- carry(T, A), carry(T, B), A!=B.
-ploc(T, A, X) :- carry(T, A), at(T, X).
-% ploc(T+1, A, X) :- ploc(T, A, X), not carry(T, X).
-% ploc(T+1, A, X) :- ploc(T, A, X), carry(T, X), location(B), not execute(T, move(B)).
+packet_at(T, A, X) :- carry(T, A), robot_at(T, X), A!=empty.
+
+% %%%%%% make sure that a package cannot switch while carried.
+% :- carry(T, A), carry(T+1, B), A!=B, 
+
+% If a packet moves it must be carried
+carry(T, A) :- packet_at(T, A, X), packet_at(T+1, A, Y), X!=Y, A!=empty.
+
+% If no packet is carried all packets stay put (Implied by line 70)
+% packet_at(T+1, A, X) :- packet_at(T, A, X), carry(T, empty), A!=empty.
 
 % Definition: execute load
-execute(T, load(A)) :- time(T), packet(A), carry(T, empty), carry(T+1, A).
+execute(T, load(A)) :- time(T), packet(A), carry(T, empty), carry(T+1, A), A!=empty.
+:- execute(T, load(emtpy)).
 carry(T, empty) :- execute(T, load(A)).
 carry(T+1, A) :- execute(T, load(A)).
-:- execute(T, load(emtpy)).
-ploc(T, A, X) :- location(X), execute(T, load(A)), at(T, X).
-at(T, X) :- location(X), execute(T, load(A)), ploc(T, A, X).
+
+% If the robot loads a packet it must be at the robots location (Implied by line 70)
+% packet_at(T, A, X) :- location(X), execute(T, load(A)), robot_at(T, X).
+% robot_at(T, X) :- location(X), execute(T, load(A)), packet_at(T, A, X).
 
 % Definition: execute release
-execute(T, release(A)) :- time(T), packet(A), carry(T+1, empty), carry(T, A).
+execute(T, release(A)) :- time(T), packet(A), carry(T+1, empty), carry(T, A), A!=empty.
+:- execute(T, release(emtpy)).
 carry(T, A) :- execute(T, release(A)).
 carry(T+1, empty) :- execute(T, release(A)).
-:- execute(T, release(emtpy)).
 
+% If the robot releases the packet it remains at the location of the robot.
+packet_at(T+1, A, X) :- location(X), execute(T, release(A)), robot_at(T, X).
+% robot_at(T, X) :- location(X), execute(T, release(A)), packet_at(T+1, A, X).
+
+% Minimize actions
+:~ execute(T, A), A != wait. [1@1, T, A]
 
 % Minimize faults
 % :~ fault(T). [1@T, T]
 
-
 #show execute/2.
-#show at/2.
+% #show robot_at/2.
 #show carry/2.
-#show ploc/3.
-
+% #show packet_at/3.
