@@ -3,17 +3,16 @@
 % Define time steps
 time(0..max_time).
 
-% INIT
+% INITIAL CONDITIONS
 robot_at(0,a).
+carry(0, empty).
 packet_at(0, one, b).
 packet_at(0, two, e).
-% packet_at(0, three, f).
-carry(0, empty).
-% packet_at(0, two, e).
+packet_at(0, three, f).
 
-% GOAL
+% GOAL CONDITIONS
 packet_at(max_time, one, e).
-robot_at(max_time, a).
+packet_at(max_time, two, b).
 % carry(1, one).
 % carry(6, two).
 
@@ -31,7 +30,7 @@ location(a; b; c; d; e; f; g; h; i).
 adjacent(a,b; b,c; c,e; e,d; a,d; d,f; f,h; h,g; h,i).
 
 % Define packets
-packet(empty; one; two).
+packet(empty; one; two; three).
 
 % Define actions
 action(move(X)) :- location(X).
