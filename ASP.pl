@@ -1,29 +1,21 @@
-% executes, packets, locations
-% move(t, location, location) - adjacent(t, location, location)
-% load(t, packet, location)  - robot_at(t, packet, location)
-% release(t, packet, location) - carry(t, packet, location)
-% maximum one packet at same time
-% 
-% problems if not something then holds
-% if llm says the sequence is inconsistent because of step x then
-% run asp but delete all steps of the plan after llm predicted failure
-% output should be an explaination to the observations
+#const max_time = 10. % Default value
 
 % Define time steps
-time(0..6).
+time(0..max_time).
 
 % INIT
 robot_at(0,a).
 packet_at(0, one, b).
 packet_at(0, two, e).
-packet_at(0, three, f).
+% packet_at(0, three, f).
 carry(0, empty).
 % packet_at(0, two, e).
 
 % GOAL
-packet_at(6, one, c).
-robot_at(6, d).
-carry(5, empty).
+packet_at(max_time, one, e).
+robot_at(max_time, a).
+% carry(1, one).
+% carry(6, two).
 
 % PLAN
 % execute(0,load(one)).
@@ -39,7 +31,7 @@ location(a; b; c; d; e; f; g; h; i).
 adjacent(a,b; b,c; c,e; e,d; a,d; d,f; f,h; h,g; h,i).
 
 % Define packets
-packet(empty; one; two; three).
+packet(empty; one; two).
 
 % Define actions
 action(move(X)) :- location(X).
@@ -76,7 +68,9 @@ A!=B :- robot_at(T, A), execute(T, move(B)).
 packet_at(T, A, X) :- carry(T, A), robot_at(T, X), A!=empty.
 
 % %%%%%% make sure that a package cannot switch while carried.
-% :- carry(T, A), carry(T+1, B), A!=B, 
+:- carry(T, A), carry(T+1, B), B!=A, A!=empty, not execute(T, release(A)).
+:- carry(T, A), carry(T+1, B), A!=B, B!=empty, not execute(T, load(B)).
+
 
 % If a packet moves it must be carried
 carry(T, A) :- packet_at(T, A, X), packet_at(T+1, A, Y), X!=Y, A!=empty.
@@ -105,12 +99,12 @@ packet_at(T+1, A, X) :- location(X), execute(T, release(A)), robot_at(T, X).
 % robot_at(T, X) :- location(X), execute(T, release(A)), packet_at(T+1, A, X).
 
 % Minimize actions
-:~ execute(T, A), A != wait. [1@1, T, A]
+:~ execute(T, A), A != wait. [T@1, T, A]
 
 % Minimize faults
 % :~ fault(T). [1@T, T]
 
 #show execute/2.
 % #show robot_at/2.
-#show carry/2.
+% #show carry/2.
 % #show packet_at/3.
