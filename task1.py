@@ -15,6 +15,9 @@ if __name__ == "__main__":
     ---------------------------------------------------------------
     """)
 
+    # TODO: Query LLM so that one answer comes out
+    # TODO: Interprete the answer of LLM
+
     answer_sets_file = asp_constants.TEST_PLAN
 
     printAnswerSet(answer_sets_file)
@@ -32,7 +35,7 @@ if __name__ == "__main__":
         print(item)
 
     print("\n--------------------------------------------------------------------------------------------\n") 
-    print("\n--------------------------------------------------------------------------------------------\n") 
+
 
     final_prompt = makePrompt(
                     llm_constants.PREPROMPT_3,
@@ -47,7 +50,6 @@ if __name__ == "__main__":
                     )   
     
     print(final_prompt)
-    print("\n--------------------------------------------------------------------------------------------\n") 
     print("\n--------------------------------------------------------------------------------------------\n") 
     response = queryLLM(final_prompt, show_stream=llm_constants.SHOW_STREAM)
 

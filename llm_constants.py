@@ -1,5 +1,5 @@
 # TODO: Rewrite: The AI assistant is responsable to check if the actions and the observations are consistent. To detect the rood cause.
-SHOW_STREAM = True
+SHOW_STREAM = False
 
 PREPROMPT_1 = """
 You are an AI assistant responsible for guiding a robot within a logistics domain. This domain includes the following elements:

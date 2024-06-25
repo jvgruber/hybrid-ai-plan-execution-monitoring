@@ -1,0 +1,143 @@
+1. Translate the plan and the observartions to natural language
+
+Plan:
+At time stemp 0 the robot starts at location a.
+At time stemp 1 it moves to location b from current location.
+At time stemp 2  robot picksup package 1 at current location.
+At time stemp 3 it moves to location c from current location.
+At time stemp 4  robot releases the package 1 at current location.
+At time stemp 5 it moves to location b from current location.
+At time stemp 6 it moves to location a from current location.
+Obs.:
+At time stemp 0 there is no package at location a 
+At time step 1 there package one is at locatin  b.
+At time stemp 3 there is no package at location c 
+At time stemp 5 there is no package at location b 
+At time stemp 6 there is no package at location a 
+
+--------------------------------------------------------------------------------------------
+
+2. Generate a Prompt for the LLM
+
+
+You are an AI assistant responsible for verifying the consistency of actions and observations within a logistics domain. This domain includes the following elements:
+
+- Robot: An autonomous entity capable of performing actions.
+- Packets: Items that need to be transported by the robot.
+- Locations: Specific places where the robot and packets are situated.
+
+Robot's Capabilities and Actions:
+The robot can perform the following actions, each with specific preconditions and effects:
+
+1. Move
+   - Description: The robot can move to an adjacent location.
+   - Precondition: The target location must be adjacent to the robot's current location.
+   - Effect: The robot's new location is the target location.
+   - Possible Failures: 
+     - The robot remains in the current location.
+     - The robot moves to a random adjacent location.
+
+2. Load
+   - Description: The robot can load a packet from its current location.
+   - Precondition: The packet must be at the robot's current location and the robot can only carry on package at the time.
+   - Effect: The robot picks up the packet.
+   - Possible Failure: The robot fails to pick up the packet.
+
+3. Release
+   - Description: The robot can unload a packet at its current location.
+   - Precondition: The robot must be carrying a packet, but can not carry more than one package.
+   - Effect: The robot places the packet at the current location.
+   - Possible Failure: The robot fails to put down the packet.
+
+4. Sensing:
+   - Sensing occurs only when the robot moves to a location.
+   - The robot can only observe packets when it is in the same location as the packet.
+   
+Additional Constraints:
+- The robot can only execute actions in this domain.
+
+Exogenous Events: 
+- External entities (e.g., a wumpus) may randomly move packets to new locations, independent of the robot's actions.
+
+Instructions for AI Assistance:
+Your goal is to verify that the actions of a given plan and the observations are consistent within the logistics domain. 
+Specifically:
+1. Evaluate Preconditions: Ensure that the preconditions for each action are met before the action is executed.
+2. Verify Action Consistency: Confirm that the effects of each action are consistent with the expected outcomes.
+3. Check Observations: Ensure that the observations align with the robot's limited sensing capabilities and any changes in the environment.
+4. Handle Exogenous Events: Take into account external events that may affect the location of packets and verify their impact on the plan.
+
+The following plan was given to the robot:
+At time stemp 0 the robot starts at location a.
+At time stemp 1 it moves to location b from current location.
+At time stemp 2  robot picksup package 1 at current location.
+At time stemp 3 it moves to location c from current location.
+At time stemp 4  robot releases the package 1 at current location.
+At time stemp 5 it moves to location b from current location.
+At time stemp 6 it moves to location a from current location.
+
+While excuting the plan the robot made the following observations:
+At time stemp 0 there is no package at location a 
+At time step 1 there package one is at locatin  b.
+At time stemp 3 there is no package at location c 
+At time stemp 5 there is no package at location b 
+At time stemp 6 there is no package at location a 
+
+The locations are connected as follows: Location A is connected to B, B is connected to C and C is connected to E.
+
+Can you please analyse the plan and the given observations step-by-step and check for inconsistencies.
+
+--------------------------------------------------------------------------------------------
+
+I'll analyze the plan and observations step-by-step, checking for consistency with the logistics domain's rules and constraints.
+
+**Step 0 (time stamp 0):**
+
+* The robot starts at location A.
+* Observation: There is no package at location A (consistent).
+
+**Step 1 (time stamp 1):**
+
+* The robot moves to location B from current location A. (Precondition: Location B is adjacent to A, which is true.)
+* Effect: The robot's new location is B.
+* Observation: Package 1 is at location B (consistent with the move action and sensing).
+
+**Step 2 (time stamp 2):**
+
+* The robot picks up package 1 at current location B. (Precondition: Package 1 is at location B, which is true.)
+* Effect: The robot picks up package 1.
+* Observation: No additional information provided.
+
+**Step 3 (time stamp 3):**
+
+* The robot moves to location C from current location B. (Precondition: Location C is adjacent to B, which is true.)
+* Effect: The robot's new location is C.
+* Observation: There is no package at location C (consistent with the move action and sensing).
+
+**Step 4 (time stamp 4):**
+
+* The robot releases package 1 at current location C. (Precondition: The robot must be carrying a packet, which is true since it picked up package 1 earlier.)
+* Effect: The robot places package 1 at location C.
+* Observation: No additional information provided.
+
+**Step 5 (time stamp 5):**
+
+* The robot moves to location B from current location C. (Precondition: Location B is adjacent to C, which is true.)
+* Effect: The robot's new location is B.
+* Observation: There is no package at location B (consistent with the move action and sensing).
+
+**Step 6 (time stamp 6):**
+
+* The robot moves to location A from current location B. (Precondition: Location A is adjacent to B, which is true.)
+* Effect: The robot's new location is A.
+* Observation: There is no package at location A (consistent with the move action and sensing).
+
+**Consistency Check:**
+
+The plan and observations appear consistent within the logistics domain's rules and constraints. All actions have been executed in a way that satisfies their preconditions, and the observations align with the robot's limited sensing capabilities.
+
+**Exogenous Events:**
+
+No external events (e.g., wumpus) are mentioned to affect the location of packets. Since no inconsistencies were found, it seems that the plan is robust against such events.
+
+In conclusion, based on the analysis, I did not find any inconsistencies in the plan and observations within the logistics domain's rules and constraints.
