@@ -1,5 +1,5 @@
 import ollama
-# import clingo
+import clingo
 import os
 
 import llm_constants
@@ -74,39 +74,37 @@ def printAnswerSet(answer_sets):
 
         for i, answer_set in enumerate(answer_sets):
             print(f"Answer Set {i}: {answer_set}")
-        return True
     else:
         print("Unsatisfiable")
-        return False
     
 
-# def solveASP(file_path):
-#     """
-#     This function takes in an ansolute or relativ path to a .pl file with and answer set program. This programm will be read and solved using clingo.
-#     Retuns a list of lists with the answer sets.
-#     """
-#     absolute_path = os.path.abspath(file_path)
+def solveASP(file_path):
+    """
+    This function takes in an ansolute or relativ path to a .pl file with and answer set program. This programm will be read and solved using clingo.
+    Retuns a list of lists with the answer sets.
+    """
+    absolute_path = os.path.abspath(file_path)
 
-#     # Check if the file exists
-#     if not os.path.exists(absolute_path):
-#         raise FileNotFoundError(f"The file at {absolute_path} does not exist.")
+    # Check if the file exists
+    if not os.path.exists(absolute_path):
+        raise FileNotFoundError(f"The file at {absolute_path} does not exist.")
         
-#     with open(file_path, 'r') as file:
-#         asp_program = file.read()
+    with open(file_path, 'r') as file:
+        asp_program = file.read()
     
-#     ctl = clingo.Control()
-#     ctl.add("base", [], asp_program)
-#     ctl.ground([("base", [])])
+    ctl = clingo.Control()
+    ctl.add("base", [], asp_program)
+    ctl.ground([("base", [])])
 
-#     result = ctl.solve()
+    result = ctl.solve()
 
-#     answer_sets = []
-#     if result.satisfiable:
-#         for model in ctl.solve(yield_=True):
-#             answer_set = [str(atom) for atom in model.symbols(shown=True)]
-#             answer_sets.append(answer_set)
+    answer_sets = []
+    if result.satisfiable:
+        for model in ctl.solve(yield_=True):
+            answer_set = [str(atom) for atom in model.symbols(shown=True)]
+            answer_sets.append(answer_set)
 
-#     return answer_sets
+    return answer_sets
     
 
 # ----------------------------------------------------------------------
@@ -116,15 +114,15 @@ if __name__ == "__main__":
     
     ASP_FILE_PATH = "ASP.pl"
 
-    answer_sets_file = asp_constants.TEST_PLAN              # TODO Put solver here  # answer_sets_file = solveASP(ASP_FILE_PATH)
-    # has_answerset = printAnswerSet(answer_sets_file)
+    # answer_sets_file = asp_constants.TEST_PLAN
+    answer_sets_file = solveASP(ASP_FILE_PATH)
+    printAnswerSet(answer_sets_file)
 
-    if len(answer_sets_file[0]) != 0: # only translate if an answerset is given
-        translated_answerset = translateAnswerSet(answer_sets_file, asp_constants.INTERPRETER_RULES, 0)
+    # if len(answer_sets_file[0]) != 0: # only translate if an answerset is given
+    #     translated_answerset = translateAnswerSet(answer_sets_file, asp_constants.INTERPRETER_RULES, 0)
         
-    else:
-        print("No answerset to translate!")
-
+    # else:
+    #     print("No answerset to translate!")j
 
     # for item in llm_constants.TEST_OBSERVATION:
     #     print(item)
