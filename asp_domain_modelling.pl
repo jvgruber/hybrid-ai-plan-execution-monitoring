@@ -11,8 +11,8 @@ packet_at(0, two, e).
 packet_at(0, three, f).
 
 % GOAL CONDITIONS
-packet_at(max_time, one, e).
-packet_at(max_time, two, b).
+% packet_at(max_time, one, e).
+% packet_at(max_time, two, b).
 
 % PLAN
 % execute(0,load(one)).

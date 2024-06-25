@@ -5,7 +5,7 @@ import replicate
 import llm_constants
 import asp_constants
 
-REPLICATE_API_TOKEN = "r8_6cYYhhQxEK7CuFzLDx061KjxL0hNWVg3aQGcl"
+REPLICATE_API_TOKEN = "r..."
 os.environ["REPLICATE_API_TOKEN"] = REPLICATE_API_TOKEN
 
 # ----------------------------------------------------------------------
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     # has_answerset = printAnswerSet(answer_sets_file)
 
     if len(answer_sets_file[0]) != 0: # only translate if an answerset is given
-        translated_answerset = translateAnswerSet(answer_sets_file, asp_constants.INTERPRETER_RULES, 0)
+        translated_answerset = translateAnswerSet(answer_sets_file, asp_constants.INTERPRETER_RULES_TASK_1, 0)
         
     else:
         print("No answerset to translate!")

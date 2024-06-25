@@ -1,7 +1,11 @@
-INTERPRETER_RULES = {
+INTERPRETER_RULES_TASK_1 = {
     'move': lambda x: f"The robot moves to location {x} from the previous location.",
     'pickup': lambda x: f"The robot picks up package {x} at the current location.",
     'release': lambda x: f"The robot releases package {x} at the current location."
+}
+
+INTERPRETER_RULES_TASK_2 = {
+    
 }
 
 TEST_PLAN = [['move(B)', 'pickup(1)', 'move(C)', 'move(E)', 'release(1)', 'pickup(2)', 'move(C)', 'move(B)', 'release(2)']]
