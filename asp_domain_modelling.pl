@@ -10,6 +10,15 @@ packet_at(0, one, b).
 packet_at(0, two, e).
 packet_at(0, three, f).
 
+% OBSERVATION SEQUENCE
+saw_packet_at(T,P) :- robot_at(T,L), packet_at(T,P,L), P!=emtpy.
+A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B).
+saw_packet_at(1, one).
+:- saw_packet_at(3, P).
+saw_packet_at(4, two).
+:- saw_packet_at(7, P).
+saw_packet_at(8, one).
+
 % GOAL CONDITIONS
 % packet_at(max_time, one, e).
 % packet_at(max_time, two, b).
@@ -87,8 +96,9 @@ carry(T+1, empty) :- execute(T, release(A)).
 % If the robot releases the packet it remains at the location of the robot.
 packet_at(T+1, A, X) :- location(X), execute(T, release(A)), robot_at(T, X).
 
-% Minimize actions
-:~ execute(T, A), A != wait. [T@1, T, A]
+% Minimize actions and penalize early executions
+% (we assume that the observations always happen asap)
+:~ execute(T, A), A != wait. [(max_time-T)@1, T, A]
 
 % Minimize faults
 % :~ fault(T). [1@T, T]
