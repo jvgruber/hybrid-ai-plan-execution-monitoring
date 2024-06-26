@@ -10,7 +10,8 @@ INTERPRETER_RULES_TASK_2 = {
     'pickup': lambda x, y: f"At time stemp {x}  robot picksup package {y} at current location.",
     'release': lambda x, y: f"At time stemp {x}  robot releases the package {y} at current location.",
     'packet_at': lambda x, y, z : f"At time stemp {x} there is no package at location {z} " if y == "empty" else f"At time step {x} there package {y} is at locatin {z}.",
-    'saw_packet_at': lambda x, y : f"Robot did not see a package at timestemp {x}" if y == "P" else f"Robot observed package {y} at time stemp {x}"
+    'saw_packet_at': lambda x, y :f"Robot observed package {y} at time stemp {x}",
+    ':- saw_packet_at': lambda x, y : f"Robot did not see a package at timestemp {x}"
 }
 
 TEST_PLAN = [['move(B)', 'pickup(1)', 'move(C)', 'move(E)', 'release(1)', 'pickup(2)', 'move(C)', 'move(B)', 'release(2)']]

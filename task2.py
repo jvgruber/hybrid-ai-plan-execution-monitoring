@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # Observations
     falty_observation = [['packet_at(0,empty,a)','packet_at(1,one, b)','packet_at(3,empty,c)','packet_at(5,one,b)','packet_at(6,empty,a)']]
     correct_observation = [['packet_at(0,empty,a)','packet_at(1,one, b)','packet_at(3,empty,c)','packet_at(5,empty,b)','packet_at(6,empty,a)']]
-    loc_invariant_obs = [['saw_packet_at(1, one)', 'saw_packet_at(3, P)', 'saw_packet_at(4, two)', 'saw_packet_at(7, P)', 'saw_packet_at(8, one)' ]]
+    loc_invariant_obs = [['saw_packet_at(1, one).', ':- saw_packet_at(3, P).', 'saw_packet_at(4, two).', ':- saw_packet_at(7, P).', 'saw_packet_at(8, one).' ]]
 
     print("""
     # -------------------------------------------------------------------
@@ -73,7 +73,6 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------
     """)
     
-
     # if llm_constants.SHOW_STREAM == False:
     #     print("The computer is working! The answer can not be displaysed while generating it. We are Sorry :/")
         
@@ -86,7 +85,7 @@ if __name__ == "__main__":
     #     print(response['message']['content'])
     #     print(response)
 
-    print("LLM IS NOT CALLED, THE ANSWERS ARE STATIC!")
+    # print("LLM IS NOT CALLED, THE ANSWERS ARE STATIC!")
 
     response_consistent ={'model': 'llama3',
                 'created_at': '2024-06-26T08:07:18.728795091Z',
@@ -119,13 +118,11 @@ if __name__ == "__main__":
 
     consistent = extractAnswer(response_inconsistent)
 
-    test_obs = [['saw_packet_at(1, one).', ':- saw_packet_at(3, P).', 'saw_packet_at(4, two).', ':- saw_packet_at(7, P).', 'saw_packet_at(8, one).' ]]
-
-
 
     if not consistent:
         print("""The obsveratoins and plan are NOT consistent!\n - Generate possible action execution by giving the ASP solver the observations""")
-
-        printAnswerSet( solveASP( "asp_domain_modelling.pl", test_obs[0] ) )
+        answer_sets = solveASP( "asp_domain_modelling.pl", loc_invariant_obs[0] )
+        opti = answer_sets[-1]
+        print( opti )
     else:
         print("The observations and the plan are consistent!")

@@ -27,7 +27,7 @@ def printAnswerSet(answer_sets):
     if answer_sets:
         print("SATISFIABLE")
 
-        for i, answer_set in enumerate(answer_sets):
+        for i, answer_set in enumerate(answer_sets): 
             print(f"Answer Set {i}:\n {answer_set}")
     else:
         print("UNSATISFIABLE")

@@ -13,11 +13,11 @@ packet_at(0, three, f).
 % OBSERVATION SEQUENCE
 saw_packet_at(T,P) :- robot_at(T,L), packet_at(T,P,L), P!=emtpy.
 A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B).
-%saw_packet_at(1, one).
-%:- saw_packet_at(3, P).
-%saw_packet_at(4, two).
-%:- saw_packet_at(7, P).
-%saw_packet_at(8, one).
+saw_packet_at(1, one).
+:- saw_packet_at(3, P).
+saw_packet_at(4, two).
+:- saw_packet_at(7, P).
+saw_packet_at(8, one).
 
 % GOAL CONDITIONS
 % packet_at(max_time, one, e).
