@@ -17,15 +17,9 @@ if __name__ == "__main__":
     ---------------------------------------------------------------\n
     """)
     
-    # PLANS AND OBSERVATIONS
-    plan_1 = [['move(b)', 'pickup(one)','move(b)', 'move(b)', 'release(one)', 'pickup(two)', 'move(c)', 'move(b)', 'release(two)']]
-    
-    obs_1C = [['saw_packet_at(1,one).',':- saw_packet_at(3,P).', 'saw_packet_at(4,two).', ':- saw_packet_at(7,P).', ':- saw_packet_at(8,P).']]
-    
-    obs_1F = [['saw_packet_at(1,one).',':- saw_packet_at(3,P).', 'saw_packet_at(4,two).', ':- saw_packet_at(7,P).', 'saw_packet_at(8,one).']]
-    
-    PLAN = plan_1
-    OBS = obs_1F
+
+    PLAN = asp_constants.PLAN_1
+    OBS = asp_constants.OBSERVATION_1C
 
     print("""
     -------------------------------------------------------------------
@@ -94,7 +88,8 @@ if __name__ == "__main__":
     if not consistent:
         print("""The obsveratoins and plan are NOT consistent!\n - Generate possible action execution by giving the ASP solver the observations""")
         answer_sets = solveASP( "asp_domain_modelling.pl", OBS[0] )
-        opti = answer_sets[-1]
-        print( opti )
+        print(answer_sets)
+        # opti = answer_sets[-1]
+        # print( opti )
     else:
         print("The observations and the plan are consistent!")

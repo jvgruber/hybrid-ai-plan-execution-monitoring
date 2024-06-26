@@ -22,14 +22,9 @@ if __name__ == "__main__":
     ---------------------------------------------------------------
     """)
 
-    plan_1 = [['move(b)', 'pickup(one)','move(b)', 'move(b)', 'release(one)', 'pickup(two)', 'move(c)', 'move(b)', 'release(two)']]
-    
-    obs_1C = [['saw_packet_at(1,one).',':- saw_packet_at(3,P).', 'saw_packet_at(4,two).', ':- saw_packet_at(7,P).', ':- saw_packet_at(8,P).']]
-    
-    obs_1F = [['saw_packet_at(1,one).',':- saw_packet_at(3,P).', 'saw_packet_at(4,two).', ':- saw_packet_at(7,P).', 'saw_packet_at(8,one).']]
 
-    PLAN = plan_1
-    OBS = obs_1C
+    PLAN = asp_constants.PLAN_1
+    OBS = asp_constants.OBSERVATION_1C
 
     translated_plan = translateAnswerSet(PLAN, asp_constants.INTERPRETER_RULES_TASK_2, 0)
     translated_obs = translateAnswerSet(OBS, asp_constants.INTERPRETER_RULES_TASK_2, 0)
