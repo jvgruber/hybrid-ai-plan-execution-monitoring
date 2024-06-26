@@ -47,3 +47,12 @@ def extractAnswer(LLM_answer):
         return True
     if "**INCONSISTENT**" in content:
         return False
+    
+
+def extractFaultyActions(LLM_answer, patterns):
+    answers = []
+    content = LLM_answer['message']['content']
+    for pattern in patterns:
+        answers.append(re.findall(pattern, content))
+
+    return answers

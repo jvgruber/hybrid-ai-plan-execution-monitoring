@@ -73,7 +73,7 @@ if __name__ == "__main__":
     """)
     
     if llm_constants.SHOW_STREAM == False:
-        print("The computer is working! The answer can not be displaysed while generating it. We are Sorry :/")
+        print(llm_constants.LOADING_TEXT)
         
     response = queryLLM(prompt, show_stream=llm_constants.SHOW_STREAM) 
 

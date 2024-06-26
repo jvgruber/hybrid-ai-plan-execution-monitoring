@@ -1,6 +1,10 @@
 # TODO: Rewrite: The AI assistant is responsable to check if the actions and the observations are consistent. To detect the rood cause.
 SHOW_STREAM = False
 
+PATTERNS = [r"move\(.+\) at T=. failed", r"release\(.+\) at T=. failed", r"pickup\(.+\) at T=. failed"]
+ 
+LOADING_TEXT = "The LLM is currently comparing the plan and observation, and we're excited to see what the results will show! Unfortunately, we can't display the answer when checking for discrepancies, but we're confident that we'll get there soon. Thanks for your patience!\n"
+
 PREPROMPT_1 = """
 You are an AI assistant responsible for guiding a robot within a logistics domain. This domain includes the following elements:
 
@@ -194,8 +198,9 @@ SECOND_QUERY = "What action failed so that the package is at location b after st
 THIRED_QUERY = "Please write your final answer in the following form: It failed due to action n.\n"
 
 
-how_to_promt = "https://chatgpt.com/share/27920835-c370-46d4-94a5-3f8d70877e44"
+good_results_1 = "https://chatgpt.com/share/27920835-c370-46d4-94a5-3f8d70877e44"
 
+good_results_2 = "https://chatgpt.com/share/72bfd732-ce25-45ce-8d05-0fed70edfc99"
 
 TEST="""
 You are an AI assistant responsible for verifying the consistency of actions and observations within a logistics domain. This domain includes the following elements:
