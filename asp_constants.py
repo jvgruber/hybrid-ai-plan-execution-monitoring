@@ -17,3 +17,9 @@ INTERPRETER_RULES_TASK_2 = {
 TEST_PLAN = [['move(B)', 'pickup(1)', 'move(C)', 'move(E)', 'release(1)', 'pickup(2)', 'move(C)', 'move(B)', 'release(2)']]
 
 TEST_OBSERVATION = ["Package 1 is at location b", 'No package is at location c', 'Package 2 is at location e', 'No package is at location c', 'Package 1 is at location b']
+
+# deliver 3 to D, deliver 2 to C
+TMIN_2 = 8
+PLAN_2 = [['move(d)', 'move(f)', 'load(three)', 'move(d)', 'release(three)', 'move(e)', 'load(two)', 'move(c)', 'release(two)']]
+OBSERVATION_2F = [['']]
+OBSERVATION_2C = [["Package 1 is at location b"]]

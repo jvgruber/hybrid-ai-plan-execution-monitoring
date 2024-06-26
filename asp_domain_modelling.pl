@@ -10,18 +10,29 @@ packet_at(0, one, b).
 packet_at(0, two, e).
 packet_at(0, three, f).
 
+% INTENDED PLAN SEQUENCE
+fault(0) :- not execute(0,move(d)).
+fault(1) :- not execute(1,move(f)).
+fault(2) :- not execute(2,load(three)).
+fault(3) :- not execute(3,move(d)).
+fault(4) :- not execute(4,release(three)).
+fault(5) :- not execute(5,move(e)).
+fault(6) :- not execute(6,load(two)).
+fault(7) :- not execute(7,move(c)).
+fault(8) :- not execute(8,wait).
+
 % OBSERVATION SEQUENCE
-saw_packet_at(T,P) :- robot_at(T,L), packet_at(T,P,L), P!=emtpy.
-A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B).
-saw_packet_at(1, one).
-:- saw_packet_at(3, P).
-saw_packet_at(4, two).
-:- saw_packet_at(7, P).
-saw_packet_at(8, one).
+:- saw_packet_at(1, P).
+saw_packet_at(2, three).
+:- saw_packet_at(4, P).
+:- saw_packet_at(5, P).
+saw_packet_at(6, two).
+:- saw_packet_at(8, P).
 
 % GOAL CONDITIONS
-% packet_at(max_time, one, e).
-% packet_at(max_time, two, b).
+% packet_at(max_time, three, d).
+% packet_at(max_time, two, c).
+% carry(max_time, empty).
 
 % PLAN
 % execute(0,load(one)).
@@ -79,13 +90,11 @@ packet_at(T, A, X) :- carry(T, A), robot_at(T, X), A!=empty.
 % If a packet moves it must be carried
 carry(T, A) :- packet_at(T, A, X), packet_at(T+1, A, Y), X!=Y, A!=empty.
 
-
 % Definition: execute load
 execute(T, load(A)) :- time(T), packet(A), carry(T, empty), carry(T+1, A), A!=empty.
 :- execute(T, load(emtpy)).
 carry(T, empty) :- execute(T, load(A)).
 carry(T+1, A) :- execute(T, load(A)).
-
 
 % Definition: execute release
 execute(T, release(A)) :- time(T), packet(A), carry(T+1, empty), carry(T, A), A!=empty.
@@ -96,14 +105,19 @@ carry(T+1, empty) :- execute(T, release(A)).
 % If the robot releases the packet it remains at the location of the robot.
 packet_at(T+1, A, X) :- location(X), execute(T, release(A)), robot_at(T, X).
 
+% Define observations
+saw_packet_at(T,P) :- robot_at(T,L), packet_at(T,P,L), P!=emtpy, not carry(T,P).
+A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B).
+
 % Minimize actions and penalize early executions
 % (we assume that the observations always happen asap)
 :~ execute(T, A), A != wait. [(max_time-T)@1, T, A]
 
 % Minimize faults
-% :~ fault(T). [1@T, T]
+:~ fault(T). [(2*max_time)@1, T]
 
 #show execute/2.
 % #show robot_at/2.
 % #show carry/2.
 % #show packet_at/3.
+% #show saw_packet_at/2.
