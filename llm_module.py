@@ -19,8 +19,8 @@ def makePrompt(preprompt="", plan_prepromtpt="", plan=[""], observation_prepropt
     final_prompt += preprompt
 
     final_prompt += plan_prepromtpt
-    for item in plan:
-        final_prompt += (item + "\n")
+    for i, item in enumerate(plan):
+        final_prompt += (item.replace("*",f"{i}") + "\n")
     
     final_prompt += "\n"
 

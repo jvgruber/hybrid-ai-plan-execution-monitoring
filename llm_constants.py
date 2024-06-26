@@ -173,7 +173,7 @@ ADJACENT_LOCATIONS = """The locations are connected as follows:
 - F is connected to H
 - H is connected to G
 - I is connected to H
-"""
+\n"""
 
 PLAN_PREPROMT = "The following plan was given to the robot:\n"
 
@@ -184,6 +184,8 @@ FIRST_QUERY = "Can you please check if the given plan and the observations are c
 FIRST_QUERY_2 = "Can you please check if the plan and the observations are consisten! If not please analys what action could have failed, so the actions allign with the observations."
 
 FIRST_QUERY_3 = "Compare the plan and the observations. Do the observations match the actions in the plan? If not, make a new plan that matches the observations."
+
+FIRST_QUERY_4 = "Compare the plan and the observations step by step. Do the observations allign with the executed actions in the plan?"
 
 OUTPUT = "After analyis the causes, pleas wirte down the found causes in the following form: --Action ... failed--. Replace the dots with the failed action"
 
