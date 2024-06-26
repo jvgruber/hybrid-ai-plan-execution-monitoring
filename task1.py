@@ -1,7 +1,7 @@
 import llm_constants
 import asp_constants
 
-from asp_module import translateAnswerSet, printAnswerSet, solveASP
+from asp_module import translateAnswerSet, printAnswerSet
 from llm_module import queryLLM, makePrompt
 
 if __name__ == "__main__":
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     
     print(final_prompt)
     print("\n--------------------------------------------------------------------------------------------\n") 
-    response = queryLLM(final_prompt, show_stream=llm_constants.SHOW_STREAM)
+    response = queryLLM(final_prompt, show_stream=True)
 
 
     for chunk in response:
