@@ -3,7 +3,11 @@ import clingo
 
 def translator(item, interpretation_rules):
     relation, rest = item.split('(', 1)
-    args = rest.rstrip(')').split(',')
+    
+    if item[-1] == ".":
+        args = rest.rstrip(').').split(',')
+    else:
+        args = rest.rstrip(')').split(',')
     
     args_sf = []
     for arg in args:

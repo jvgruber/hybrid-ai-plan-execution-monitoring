@@ -162,7 +162,18 @@ Following are some faults and their causes:
 
 START_LOCATION = "The robot starts at position A.\n\n"
 
-ADJACENT_LOCATIONS = "The locations are connected as follows: Location A is connected to B, B is connected to C and C is connected to E.\n\n"
+ADJACENT_LOCATIONS = """The locations are connected as follows: 
+- A is connected to B
+- B is connected to C
+- C is connected to E
+- E is connected to D
+- B is connected to D
+- A is connected to D
+- D is connected to F
+- F is connected to H
+- H is connected to G
+- I is connected to H
+"""
 
 PLAN_PREPROMT = "The following plan was given to the robot:\n"
 
