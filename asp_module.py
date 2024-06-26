@@ -4,8 +4,13 @@ import clingo
 def translator(item, interpretation_rules):
     relation, rest = item.split('(', 1)
     args = rest.rstrip(')').split(',')
+    
+    args_sf = []
+    for arg in args:
+        args_sf.append(arg.strip())
+
     try:
-        return interpretation_rules[relation](*args)
+        return interpretation_rules[relation](*args_sf)
     except Exception as e:
         print(f"Error: No translation rule is defined for the {e} predicate.")
         quit()
@@ -28,7 +33,7 @@ def printAnswerSet(answer_sets):
         print("UNSATISFIABLE")
     
 
-def solveASP(file_path, add_to_top = ""):
+def solveASP(file_path, add_to_top = [""]):
     """
     This function takes in an ansolute or relativ path to a .pl file with and answer set program. This programm will be read and solved using clingo.
     Retuns a list of lists with the answer sets.
@@ -43,7 +48,9 @@ def solveASP(file_path, add_to_top = ""):
         asp_program = file.read()
     
     ctl = clingo.Control()
-    ctl.add("base", [], add_to_top)
+    for item in add_to_top:
+        ctl.add("base", [], item)
+        
     ctl.add("base", [], asp_program)
     ctl.ground([("base", [])])
 
