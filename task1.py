@@ -23,8 +23,8 @@ if __name__ == "__main__":
     """)
 
 
-    PLAN = asp_constants.PLAN_1
-    OBS = asp_constants.OBSERVATION_1C
+    PLAN = asp_constants.PLAN_2
+    OBS = asp_constants.OBSERVATION_2C
 
     translated_plan = translateAnswerSet(PLAN, asp_constants.INTERPRETER_RULES_TASK_2, 0)
     translated_obs = translateAnswerSet(OBS, asp_constants.INTERPRETER_RULES_TASK_2, 0)
