@@ -18,13 +18,14 @@ if __name__ == "__main__":
 
     print("""
     ---------------------------------------------------------------
-    - 1. Translate the plan and observartions to natural language -    
+    - 1. Translate the plan and observations to natural language -    
     ---------------------------------------------------------------
     """)
 
-
-    PLAN = asp_constants.PLAN_2
-    OBS = asp_constants.OBSERVATION_2C
+    # asp_constants.PLAN_n and asp_constants.OBSERVATIONS_nC/F denote which plan and which observation is used.
+    # the observations can either be Consistent of Faulty
+    PLAN = asp_constants.PLAN_1
+    OBS = asp_constants.OBSERVATION_1C
 
     translated_plan = translateAnswerSet(PLAN, asp_constants.INTERPRETER_RULES_TASK_2, 0)
     translated_obs = translateAnswerSet(OBS, asp_constants.INTERPRETER_RULES_TASK_2, 0)
@@ -38,9 +39,9 @@ if __name__ == "__main__":
     """)
 
     llm_query = "Can you please analyse the plan and the given observations step-by-step and check for inconsistencies."
-    anwer_form = "If the plan and the observations are consistent, please wirte as last line **CONSISTENT**. If they are not wirte **INCONSISTENT** and write a list of which action went wrong at what time stamp."
+    anwer_form = "If the plan and the observations are consistent, please write as last line **CONSISTENT**. If they are not write **INCONSISTENT** and write a list of which action went wrong at what time stamp."
     answer_list = """
-    This is how you should wirte the list:
+    This is how you should write the list:
     if e.g. at time step 4 move to b failed write, move(b) at T=4 failed
     if e.g. at time step 2 pickup package one failed write, pickup(one) at T=2 failed
     if e.g. at time step 5 release package two failed write, release(two) at T=5 failed
@@ -81,9 +82,9 @@ if __name__ == "__main__":
     """)
 
     if extractAnswer(response):
-        print("Plan and Observations allign!")
+        print("Plan and Observations align!")
     else:
-        print("Plan and Observations do NOT allign!")
+        print("Plan and Observations do NOT align!")
         answers = extractFaultyActions(response, llm_constants.PATTERNS)
         print(answers)
         

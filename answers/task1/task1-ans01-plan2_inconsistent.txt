@@ -1,0 +1,197 @@
+    ---------------------------------------------------------------
+    - 1. Translate the plan and observartions to natural language -    
+    ---------------------------------------------------------------
+    
+['At time stemp * it moves to location d from current location.', 'At time stemp * it moves to location f from current location.', 'At time stemp * robot picksup package three at current location.', 'At time stemp * it moves to location d from current location.', 'At time stemp * robot releases the package three at current location.', 'At time stemp * it moves to location e from current location.', 'At time stemp * robot picksup package two at current location.', 'At time stemp * it moves to location c from current location.', 'At time stemp * robot releases the package two at current location.'] ['Robot did not see a package at time stemp 1', 'Robot observed package one at time stemp 2', 'Robot did not see a package at time stemp 4', 'Robot observed package one at time stemp 5', 'Robot observed package two at time stemp 6', 'Robot did not see a package at time stemp 8']
+
+    ------------------------------------------------------------------------------------
+    - 2. Build prompt out of logical domain restrictions, plan, observations and query -    
+    ------------------------------------------------------------------------------------
+    
+
+You are an AI assistant responsible for verifying the consistency of actions and observations within a logistics domain. This domain includes the following elements:
+
+- Robot: An autonomous entity capable of performing actions.
+- Packets: Items that need to be transported by the robot.
+- Locations: Specific places where the robot and packets are situated.
+
+Robot's Capabilities and Actions:
+The robot can perform the following actions, each with specific preconditions and effects:
+
+1. Move
+   - Description: The robot can move to an adjacent location.
+   - Precondition: The target location must be adjacent to the robot's current location.
+   - Effect: The robot's new location is the target location.
+   - Possible Failures: 
+     - The robot remains in the current location.
+     - The robot moves to a random adjacent location.
+
+2. Load
+   - Description: The robot can load a packet from its current location.
+   - Precondition: The packet must be at the robot's current location and the robot can only carry on package at the time.
+   - Effect: The robot picks up the packet.
+   - Possible Failure: The robot fails to pick up the packet.
+
+3. Release
+   - Description: The robot can unload a packet at its current location.
+   - Precondition: The robot must be carrying a packet, but can not carry more than one package.
+   - Effect: The robot places the packet at the current location.
+   - Possible Failure: The robot fails to put down the packet.
+
+4. Observations:
+   - Observations occurs always when the robot moves from his current location to the new location.
+   - The robot can only observe packets when it is in the same location as the packet.
+   
+Additional Constraints:
+- The robot can only execute actions in this domain.
+
+Exogenous Events: 
+- External entities (e.g., a wumpus) may randomly move packets to new locations, independent of the robot's actions.
+
+Instructions for AI Assistance:
+Your goal is to verify that the actions of a given plan and the observations are consistent within the logistics domain. 
+Specifically:
+1. Evaluate Preconditions: Ensure that the preconditions for each action are met before the action is executed.
+2. Verify Action Consistency: Confirm that the effects of each action are consistent with the expected outcomes.
+3. Check Observations: Ensure that the observations align with the robot's limited sensing capabilities and any changes in the environment.
+4. Handle Exogenous Events: Take into account external events that may affect the location of packets and verify their impact on the plan.
+
+The following plan was given to the robot:
+At time stemp 0 it moves to location d from current location.
+At time stemp 1 it moves to location f from current location.
+At time stemp 2 robot picksup package three at current location.
+At time stemp 3 it moves to location d from current location.
+At time stemp 4 robot releases the package three at current location.
+At time stemp 5 it moves to location e from current location.
+At time stemp 6 robot picksup package two at current location.
+At time stemp 7 it moves to location c from current location.
+At time stemp 8 robot releases the package two at current location.
+
+While excuting the plan the robot made the following observations:
+Robot did not see a package at time stemp 1
+Robot observed package one at time stemp 2
+Robot did not see a package at time stemp 4
+Robot observed package one at time stemp 5
+Robot observed package two at time stemp 6
+Robot did not see a package at time stemp 8
+
+
+Following are some faults and their causes:
+- A faulty pickup lead to a package remaining at the same location.
+- A faulty release lead to the package remainint on the robot.
+The robot starts at position A.
+
+The locations are connected as follows: 
+- A is connected to B
+- B is connected to C
+- C is connected to E
+- E is connected to D
+- B is connected to D
+- A is connected to D
+- D is connected to F
+- F is connected to H
+- H is connected to G
+- I is connected to H
+
+Can you please analyse the plan and the given observations step-by-step and check for inconsistencies.If the plan and the observations are consistent, please wirte as last line **CONSISTENT**. If they are not wirte **INCONSISTENT** and write a list of which action went wrong at what time stamp.
+    This is how you should wirte the list:
+    if e.g. at time step 4 move to b failed write, move(b) at T=4 failed
+    if e.g. at time step 2 pickup package one failed write, pickup(one) at T=2 failed
+    if e.g. at time step 5 release package two failed write, release(two) at T=5 failed
+
+
+
+    ------------------------------------------------------------
+    - 3. Query the LLM if plan and observations are consistent -    
+    ------------------------------------------------------------
+    
+The LLM is currently comparing the plan and observation, and we're excited to see what the results will show! Unfortunately, we can't display the answer when checking for discrepancies, but we're confident that we'll get there soon. Thanks for your patience!
+
+I'll analyze the plan and observations step-by-step to verify consistency within the logistics domain.
+
+**Step 1: Evaluate Preconditions**
+
+At time stamp 0, the robot moves from location A to D.
+        * Precondition for Move: Target location must be adjacent. Location D is adjacent to A, so the precondition is met.
+        * No issues found.
+
+At time stamp 1, the robot moves from location D to F.
+        * Precondition for Move: Target location must be adjacent. Location F is not adjacent to D, so this action fails.
+        * Possible failure: move(F) at T=1 failed
+
+**Step 2: Verify Action Consistency**
+
+At time stamp 0, the robot moves from location A to D.
+        * Effect: Robot's new location is D.
+
+At time stamp 1, the robot tries to move from location D to F.
+        * Since the Move action fails at this timestamp, the robot remains in location D.
+
+At time stamp 2, the robot picks up package three at current location (D).
+        * Precondition for Load: Packet must be at the robot's current location and the robot can only carry one packet. The precondition is met.
+        * Effect: Robot picks up package three.
+
+At time stamp 3, the robot moves from location D to D.
+        * No issues found.
+
+At time stamp 4, the robot releases package three at current location (D).
+        * Precondition for Release: Robot must be carrying a packet. The robot is carrying package three, so the precondition is met.
+        * Effect: Robot places package three at location D.
+
+At time stamp 5, the robot moves from location D to E.
+        * No issues found.
+
+At time stamp 6, the robot picks up package two at current location (E).
+        * Precondition for Load: Packet must be at the robot's current location and the robot can only carry one packet. Package two is at location E, so the precondition is met.
+        * Effect: Robot picks up package two.
+
+At time stamp 7, the robot moves from location E to C.
+        * No issues found.
+
+At time stamp 8, the robot releases package two at current location (C).
+        * Precondition for Release: Robot must be carrying a packet. The robot is carrying package two, so the precondition is met.
+        * Effect: Robot places package two at location C.
+
+**Step 3: Check Observations**
+
+At time stamp 0, the robot moves from location A to D and observes nothing (no packets).
+        * Correct observation.
+
+At time stamp 1, the robot does not see a packet.
+        * Correct observation.
+
+At time stamp 2, the robot observes package one.
+        * Incorrect observation: The robot did not observe any packages at this timestamp, only picked up package three.
+
+At time stamp 4, the robot does not see a packet.
+        * Correct observation.
+
+At time stamp 5, the robot observes package one.
+        * Incorrect observation: There is no package one in the environment, and the robot should have observed nothing.
+
+At time stamp 6, the robot observes package two.
+        * Correct observation.
+
+At time stamp 8, the robot does not see a packet.
+        * Correct observation.
+
+**Step 4: Handle Exogenous Events**
+
+No external events are mentioned that would affect the location of packets or the plan.
+
+**Conclusion**
+
+The plan is **INCONSISTENT**, and the following actions went wrong at their respective timestamps:
+
+1. move(F) at T=1 failed
+2. pickup(one) at T=2 failed (since the robot did not observe any package)
+3. release(two) at T=5 failed (since there is no package one in the environment)
+
+The other observations and actions are consistent within the logistics domain.
+
+    -------------------------------
+    - 4. Read in the LLM response -    
+    -------------------------------
+    
+Plan and Observations do NOT allign!
+[['move(F) at T=1 failed', 'move(F) at T=1 failed'], ['release(two) at T=5 failed'], ['pickup(one) at T=2 failed']]

@@ -16,10 +16,11 @@ if __name__ == "__main__":
     2. Solve ASP programm
     ---------------------------------------------------------------\n
     """)
-    
-
-    PLAN = asp_constants.PLAN_1
-    OBS = asp_constants.OBSERVATION_1C
+    # asp_constants.PLAN_n, asp_constants.OBSERVATIONS_nC/F and asp_constants.TMIN_n denote which plan, 
+    # observation and number of timestamps is used. The observations can either be Consistent of Faulty
+    TIME_STAMPS = asp_constants.TMIN_5
+    PLAN = asp_constants.PLAN_5
+    OBS = asp_constants.OBSERVATION_5C
 
     print("""
     -------------------------------------------------------------------
@@ -87,7 +88,7 @@ if __name__ == "__main__":
 
     if not consistent:
         print("""The obsveratoins and plan are NOT consistent!\n - Generate possible action execution by giving the ASP solver the observations""")
-        answer_sets = solveASP( "asp_domain_modelling.pl", OBS[0] )
+        answer_sets = solveASP( "asp_domain_modelling.pl", OBS[0] , TIME_STAMPS)
         opti = answer_sets[-1]
         print( opti )
     else:

@@ -1,0 +1,213 @@
+   -------------------------------------------------------------------
+    - 1. Translate the plan and the observartions to natural language -    
+    -------------------------------------------------------------------
+    
+Plan:
+At time stemp * it moves to location b from current location.
+At time stemp * robot picksup package one at current location.
+At time stemp * it moves to location d from current location.
+At time stemp * robot releases the package one at current location.
+At time stemp * it moves to location f from current location.
+At time stemp * robot picksup package three at current location.
+At time stemp * it moves to location h from current location.
+At time stemp * robot releases the package three at current location.
+At time stemp * it moves to location f from current location.
+At time stemp * it moves to location d from current location.
+At time stemp * it moves to location b from current location.
+Obs.:
+Robot observed package one at time stemp 1
+Robot did not see a package at time stemp 3
+Robot observed package three at time stemp 5
+Robot did not see a package at time stemp 7
+Robot did not see a package at time stemp 9
+Robot observed package one at time stemp 10
+Robot did not see a package at time stemp 11
+
+    -------------------------------------------------------------------
+    - 2. Generate a Prompt for the LLM --------------------------------
+    -------------------------------------------------------------------
+    
+
+You are an AI assistant responsible for verifying the consistency of actions and observations within a logistics domain. This domain includes the following elements:
+
+- Robot: An autonomous entity capable of performing actions.
+- Packets: Items that need to be transported by the robot.
+- Locations: Specific places where the robot and packets are situated.
+
+Robot's Capabilities and Actions:
+The robot can perform the following actions, each with specific preconditions and effects:
+
+1. Move
+   - Description: The robot can move to an adjacent location.
+   - Precondition: The target location must be adjacent to the robot's current location.
+   - Effect: The robot's new location is the target location.
+   - Possible Failures: 
+     - The robot remains in the current location.
+     - The robot moves to a random adjacent location.
+
+2. Load
+   - Description: The robot can load a packet from its current location.
+   - Precondition: The packet must be at the robot's current location and the robot can only carry on package at the time.
+   - Effect: The robot picks up the packet.
+   - Possible Failure: The robot fails to pick up the packet.
+
+3. Release
+   - Description: The robot can unload a packet at its current location.
+   - Precondition: The robot must be carrying a packet, but can not carry more than one package.
+   - Effect: The robot places the packet at the current location.
+   - Possible Failure: The robot fails to put down the packet.
+
+4. Sensing:
+   - Sensing occurs only when the robot moves to a location.
+   - The robot can only observe packets when it is in the same location as the packet.
+   
+Additional Constraints:
+- The robot can only execute actions in this domain.
+
+Exogenous Events: 
+- External entities (e.g., a wumpus) may randomly move packets to new locations, independent of the robot's actions.
+
+Instructions for AI Assistance:
+Your goal is to verify that the actions of a given plan and the observations are consistent within the logistics domain. 
+Specifically:
+1. Evaluate Preconditions: Ensure that the preconditions for each action are met before the action is executed.
+2. Verify Action Consistency: Confirm that the effects of each action are consistent with the expected outcomes.
+3. Check Observations: Ensure that the observations align with the robot's limited sensing capabilities and any changes in the environment.
+4. Handle Exogenous Events: Take into account external events that may affect the location of packets and verify their impact on the plan.
+
+The following plan was given to the robot:
+At time stemp 0 it moves to location b from current location.
+At time stemp 1 robot picksup package one at current location.
+At time stemp 2 it moves to location d from current location.
+At time stemp 3 robot releases the package one at current location.
+At time stemp 4 it moves to location f from current location.
+At time stemp 5 robot picksup package three at current location.
+At time stemp 6 it moves to location h from current location.
+At time stemp 7 robot releases the package three at current location.
+At time stemp 8 it moves to location f from current location.
+At time stemp 9 it moves to location d from current location.
+At time stemp 10 it moves to location b from current location.
+
+While executing the plan the robot made the following observations:
+Robot observed package one at time stemp 1
+Robot did not see a package at time stemp 3
+Robot observed package three at time stemp 5
+Robot did not see a package at time stemp 7
+Robot did not see a package at time stemp 9
+Robot observed package one at time stemp 10
+Robot did not see a package at time stemp 11
+
+The locations are connected as follows: 
+- A is connected to B
+- B is connected to C
+- C is connected to E
+- E is connected to D
+- B is connected to D
+- A is connected to D
+- D is connected to F
+- F is connected to H
+- H is connected to G
+- I is connected to H
+
+Can you please analyse the plan and the given observations step-by-step and check for inconsistencies.If the plan and the observations are consistent, please wirte as last line **CONSISTENT**, if they are not wirte **INCONSISTENT**
+
+    -------------------------------------------------------------------
+    - 3. Query LLM ----------------------------------------------------
+    -------------------------------------------------------------------
+    
+The LLM is currently comparing the plan and observation, and we're excited to see what the results will show! Unfortunately, we can't display the answer when checking for discrepancies, but we're confident that we'll get there soon. Thanks for your patience!
+
+I'll analyze the plan and observations step-by-step to verify consistency.
+
+Time Step 0: The robot moves from its current location (A) to location B.
+Evaluation:
+Precondition for Move action is met (B is adjacent to A).
+Effect of Move action is consistent with expected outcome (robot's new location is B).
+
+Observation at Time Step 0: N/A
+
+Time Step 1: The robot picks up package one at its current location (B).
+Evaluation:
+Precondition for Load action is met (package one is at the robot's current location, B).
+Effect of Load action is consistent with expected outcome (robot picks up package one).
+
+Observation at Time Step 1: Robot observed package one.
+
+Time Step 2: The robot moves from its current location (B) to location D.
+Evaluation:
+Precondition for Move action is met (D is adjacent to B).
+Effect of Move action is consistent with expected outcome (robot's new location is D).
+
+Observation at Time Step 2: N/A
+
+Time Step 3: The robot releases package one at its current location (D).
+Evaluation:
+Precondition for Release action is met (robot is carrying package one, and it's at the current location, D).
+Effect of Release action is consistent with expected outcome (robot places package one at the current location, D).
+
+Observation at Time Step 3: Robot did not see a package.
+
+Note: This observation is consistent with the robot releasing package one at time step 3.
+
+Time Step 4: The robot moves from its current location (D) to location F.
+Evaluation:
+Precondition for Move action is met (F is adjacent to D).
+Effect of Move action is consistent with expected outcome (robot's new location is F).
+
+Observation at Time Step 4: N/A
+
+Time Step 5: The robot picks up package three at its current location (F).
+Evaluation:
+Precondition for Load action is met (package three is at the robot's current location, F).
+Effect of Load action is consistent with expected outcome (robot picks up package three).
+
+Observation at Time Step 5: Robot observed package three.
+
+Time Step 6: The robot moves from its current location (F) to location H.
+Evaluation:
+Precondition for Move action is met (H is adjacent to F).
+Effect of Move action is consistent with expected outcome (robot's new location is H).
+
+Observation at Time Step 6: N/A
+
+Time Step 7: The robot releases package three at its current location (H).
+Evaluation:
+Precondition for Release action is met (robot is carrying package three, and it's at the current location, H).
+Effect of Release action is consistent with expected outcome (robot places package three at the current location, H).
+
+Observation at Time Step 7: Robot did not see a package.
+
+Note: This observation is consistent with the robot releasing package three at time step 7.
+
+Time Step 8: The robot moves from its current location (H) to location F.
+Evaluation:
+Precondition for Move action is met (F is adjacent to H).
+Effect of Move action is consistent with expected outcome (robot's new location is F).
+
+Observation at Time Step 8: N/A
+
+Time Step 9: The robot moves from its current location (F) to location D.
+Evaluation:
+Precondition for Move action is met (D is adjacent to F).
+Effect of Move action is consistent with expected outcome (robot's new location is D).
+
+Observation at Time Step 9: Robot did not see a package.
+
+Time Step 10: The robot moves from its current location (D) to location B.
+Evaluation:
+Precondition for Move action is met (B is adjacent to D).
+Effect of Move action is consistent with expected outcome (robot's new location is B).
+
+Observation at Time Step 10: Robot observed package one.
+
+Time Step 11: The robot does not observe a package.
+Note: This observation is consistent with the robot observing package one and then moving away from it at time step 10.
+
+Conclusion:
+The plan and observations are **CONSISTENT**.
+
+    -------------------------------------------------------------------
+    - 4. Extract Answer -----------------------------------------------
+    -------------------------------------------------------------------
+    
+The observations and the plan are consistent!
