@@ -18,9 +18,9 @@ if __name__ == "__main__":
     """)
     # asp_constants.PLAN_n, asp_constants.OBSERVATIONS_nC/F and asp_constants.TMIN_n denote which plan, 
     # observation and number of timestamps is used. The observations can either be Consistent of Faulty
-    TIME_STAMPS = asp_constants.TMIN_5
-    PLAN = asp_constants.PLAN_5
-    OBS = asp_constants.OBSERVATION_5C
+    TIME_STAMPS = asp_constants.TMIN_1
+    PLAN = asp_constants.PLAN_1
+    OBS = asp_constants.OBSERVATION_1C
 
     print("""
     -------------------------------------------------------------------

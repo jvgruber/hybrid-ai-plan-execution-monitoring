@@ -1,4 +1,4 @@
-#const max_time = 10. % Default value
+%#const max_time = 10. % Default value
 
 % Define time steps
 time(0..max_time).
