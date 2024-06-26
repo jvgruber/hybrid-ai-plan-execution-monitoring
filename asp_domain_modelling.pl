@@ -116,4 +116,4 @@ A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B), P!=emtpy.
 % #show carry/2.
 % #show packet_at/3.
 % #show saw_packet_at/2.
-#show fault/1.
+% #show fault/1.

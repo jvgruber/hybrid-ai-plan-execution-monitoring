@@ -88,8 +88,7 @@ if __name__ == "__main__":
     if not consistent:
         print("""The obsveratoins and plan are NOT consistent!\n - Generate possible action execution by giving the ASP solver the observations""")
         answer_sets = solveASP( "asp_domain_modelling.pl", OBS[0] )
-        print(answer_sets)
-        # opti = answer_sets[-1]
-        # print( opti )
+        opti = answer_sets[-1]
+        print( opti )
     else:
         print("The observations and the plan are consistent!")
