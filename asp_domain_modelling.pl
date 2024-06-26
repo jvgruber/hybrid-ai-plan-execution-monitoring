@@ -11,41 +11,48 @@ packet_at(0, two, e).
 packet_at(0, three, f).
 
 % INTENDED PLAN SEQUENCE
-fault(0) :- not execute(0,move(d)).
-fault(1) :- not execute(1,move(f)).
-fault(2) :- not execute(2,load(three)).
-fault(3) :- not execute(3,move(d)).
-fault(4) :- not execute(4,release(three)).
-fault(5) :- not execute(5,move(e)).
-fault(6) :- not execute(6,load(two)).
-fault(7) :- not execute(7,move(c)).
-fault(8) :- not execute(8,wait).
+fault(0) :- not execute(0,move(b)).
+fault(1) :- not execute(1,load(one)).
+fault(2) :- not execute(2,move(d)).
+fault(3) :- not execute(3,move(f)).
+fault(4) :- not execute(4,move(h)).
+fault(5) :- not execute(5,release(one)).
+fault(6) :- not execute(6,move(f)).
+fault(7) :- not execute(7,load(three)).
+fault(8) :- not execute(8,move(d)).
+fault(9) :- not execute(9,release(three)).
 
 % OBSERVATION SEQUENCE
-:- saw_packet_at(1, P).
-saw_packet_at(2, three).
-:- saw_packet_at(4, P).
+saw_packet_at(1, one).
+:- saw_packet_at(3, P).
+saw_packet_at(4, three).
 :- saw_packet_at(5, P).
-saw_packet_at(6, two).
-:- saw_packet_at(8, P).
+saw_packet_at(7, three).
+:- saw_packet_at(9, P).
+
 
 % GOAL CONDITIONS
+% packet_at(max_time, one, h).
 % packet_at(max_time, three, d).
-% packet_at(max_time, two, c).
 % carry(max_time, empty).
 
 % PLAN
-% execute(0,load(one)).
-% execute(1,move(b)).
-% execute(2,release(one)).
-% execute(3,move(c)).
-% execute(6,wait).
+execute(0,move(b)).
+execute(1,load(one)).
+execute(2,move(d)).
+execute(3,move(f)).
+execute(4,move(h)).
+execute(5,release(one)).
+execute(6,move(f)).
+execute(7,load(three)).
+execute(8,move(d)).
+execute(9,release(three)).
 
 % Define locations
 location(a; b; c; d; e; f; g; h; i).
 
 % Original adjacency pairs
-adjacent(a,b; b,c; c,e; e,d; a,d; d,f; f,h; h,g; h,i).
+adjacent(a,b; a,d; b,c; b,d; c,e; e,d; d,f; f,h; h,g; h,i).
 
 % Define packets
 packet(empty; one; two; three).
@@ -107,11 +114,16 @@ packet_at(T+1, A, X) :- location(X), execute(T, release(A)), robot_at(T, X).
 
 % Define observations
 saw_packet_at(T,P) :- robot_at(T,L), packet_at(T,P,L), P!=emtpy, not carry(T,P).
-A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B).
+A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B), P!=emtpy.
 
-% Minimize actions and penalize early executions
-% (we assume that the observations always happen asap)
-:~ execute(T, A), A != wait. [(max_time-T)@1, T, A]
+% Does not observe a packet at a location while carrying it.
+:- saw_packet_at(T,P), carry(T,P), P!=emtpy.
+
+% Observations only happens when entering a location.
+% :- saw_packet_at(T+1,P), robot_at(T,L), packet_at(T,P,L), P!=emtpy.
+
+% Minimize actions and penalize delayed execution
+:~ execute(T, A), A != wait. [T@1, T, A]
 
 % Minimize faults
 :~ fault(T). [(2*max_time)@1, T]
@@ -121,3 +133,4 @@ A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B).
 % #show carry/2.
 % #show packet_at/3.
 % #show saw_packet_at/2.
+#show fault/1.

@@ -25,8 +25,8 @@ def actionsToASPOutput(actions_list):
 
 # Main function
 def main():
-    actions_list = ["move(d)", "move(f)", "load(three)", "move(d)", "release(three)", "move(e)", "load(two)", "move(c)", "wait"]
-    asp_output = "execute(7,move(c)) execute(5,move(e)) execute(4,move(c)) execute(1,move(b)) execute(3,load(one)) execute(8,wait) execute(0,wait) execute(2,wait) execute(6,wait)"   
+    actions_list = ['move(b)', 'load(one)', 'move(d)', 'move(f)', 'move(h)', 'release(one)', 'move(f)', 'load(three)', 'move(d)', 'release(three)']
+    asp_output = "execute(0,move(b)) execute(7,move(d)) execute(6,move(e)) execute(4,move(c)) execute(3,move(e)) execute(2,move(d)) execute(1,load(one)) fault(3) fault(4) fault(5) fault(6) fault(7) fault(8) fault(9) execute(5,wait) execute(8,wait) execute(9,wait) execute(10,wait) execute(11,wait) execute(12,wait)"   
 
     parser = argparse.ArgumentParser(description="Translate between asp output and ordered actions.")
     parser.add_argument("mode", choices=["to_list", "to_asp", "sort_asp"], help="Mode of operation")
