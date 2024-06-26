@@ -10,43 +10,26 @@ packet_at(0, one, b).
 packet_at(0, two, e).
 packet_at(0, three, f).
 
-% INTENDED PLAN SEQUENCE
-fault(0) :- not execute(0,move(b)).
-fault(1) :- not execute(1,load(one)).
-fault(2) :- not execute(2,move(d)).
-fault(3) :- not execute(3,move(f)).
-fault(4) :- not execute(4,move(h)).
-fault(5) :- not execute(5,release(one)).
-fault(6) :- not execute(6,move(f)).
-fault(7) :- not execute(7,load(three)).
-fault(8) :- not execute(8,move(d)).
-fault(9) :- not execute(9,release(three)).
+% INTENDED PLAN SEQUENCE (get this from python)
+% fault(0) :- not execute(0,move(b)).
+% fault(1) :- not execute(1,load(one)).
+% fault(2) :- not execute(2,move(d)).
+% fault(3) :- not execute(3,move(f)).
+% fault(4) :- not execute(4,move(h)).
+% fault(5) :- not execute(5,release(one)).
+% fault(6) :- not execute(6,move(f)).
+% fault(7) :- not execute(7,load(three)).
+% fault(8) :- not execute(8,move(d)).
+% fault(9) :- not execute(9,release(three)).
 
-% OBSERVATION SEQUENCE
-saw_packet_at(1, one).
-:- saw_packet_at(3, P).
-saw_packet_at(4, three).
-:- saw_packet_at(5, P).
-saw_packet_at(7, three).
-:- saw_packet_at(9, P).
+% OBSERVATION SEQUENCE (get this from python)
+% saw_packet_at(1, one).
+% :- saw_packet_at(3, P).
+% saw_packet_at(4, three).
+% :- saw_packet_at(5, P).
+% saw_packet_at(7, three).
+% :- saw_packet_at(9, P).
 
-
-% GOAL CONDITIONS
-% packet_at(max_time, one, h).
-% packet_at(max_time, three, d).
-% carry(max_time, empty).
-
-% PLAN
-execute(0,move(b)).
-execute(1,load(one)).
-execute(2,move(d)).
-execute(3,move(f)).
-execute(4,move(h)).
-execute(5,release(one)).
-execute(6,move(f)).
-execute(7,load(three)).
-execute(8,move(d)).
-execute(9,release(three)).
 
 % Define locations
 location(a; b; c; d; e; f; g; h; i).
@@ -112,14 +95,14 @@ carry(T+1, empty) :- execute(T, release(A)).
 % If the robot releases the packet it remains at the location of the robot.
 packet_at(T+1, A, X) :- location(X), execute(T, release(A)), robot_at(T, X).
 
-% Define observations
+% Define observation 
 saw_packet_at(T,P) :- robot_at(T,L), packet_at(T,P,L), P!=emtpy, not carry(T,P).
 A=B :- saw_packet_at(T,P), robot_at(T,A), packet_at(T,P,B), P!=emtpy.
 
 % Does not observe a packet at a location while carrying it.
 :- saw_packet_at(T,P), carry(T,P), P!=emtpy.
 
-% Observations only happens when entering a location.
+% Observations only happens when entering a location. (does not work)
 % :- saw_packet_at(T+1,P), robot_at(T,L), packet_at(T,P,L), P!=emtpy.
 
 % Minimize actions and penalize delayed execution
