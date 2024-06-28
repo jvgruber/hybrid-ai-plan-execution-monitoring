@@ -1,5 +1,7 @@
 import llm_constants
 import asp_constants
+import time
+
 
 from asp_module import translateAnswerSet, printAnswerSet
 from llm_module import queryLLM, makePrompt, extractAnswer, extractFaultyActions
@@ -15,6 +17,8 @@ if __name__ == "__main__":
     Note: The LLM should be used to find the error root cause
     ---------------------------------------------------------------
     """)
+
+    time_start = time.time()
 
     print("""
     ---------------------------------------------------------------
@@ -88,3 +92,7 @@ if __name__ == "__main__":
         answers = extractFaultyActions(response, llm_constants.PATTERNS)
         print(answers)
         
+    time_end = time.time()
+    dt = time_end-time_start
+    minutes, seconds = divmod(dt, 60)
+    print(f"Runtime Time: {int(minutes):02}:{int(seconds):02} (mm:ss)")

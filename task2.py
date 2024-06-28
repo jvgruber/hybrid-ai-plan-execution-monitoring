@@ -3,8 +3,12 @@ import asp_constants
 
 from asp_module import translateAnswerSet, printAnswerSet, solveASP
 from llm_module import queryLLM, makePrompt, extractAnswer
+from translate_plan import actionsToASPOutput
+
+import time
 
 if __name__ == "__main__":
+    time_start = time.time()
     print("""
     ---------------------------------------------------------------
     Task 2:
@@ -88,8 +92,14 @@ if __name__ == "__main__":
 
     if not consistent:
         print("""The obsveratoins and plan are NOT consistent!\n - Generate possible action execution by giving the ASP solver the observations""")
-        answer_sets = solveASP( "asp_domain_modelling.pl", OBS[0] , TIME_STAMPS)
+        intended_plan = actionsToASPOutput(PLAN[0])
+        answer_sets = solveASP( "asp_domain_modelling.pl", intended_plan, OBS[0] , TIME_STAMPS)
         opti = answer_sets[-1]
         print( opti )
     else:
         print("The observations and the plan are consistent!")
+
+    time_end = time.time()
+    dt = time_end-time_start
+    minutes, seconds = divmod(dt, 60)
+    print(f"Runtime Time: {int(minutes):02}:{int(seconds):02} (mm:ss)")

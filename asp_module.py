@@ -37,7 +37,7 @@ def printAnswerSet(answer_sets):
         print("UNSATISFIABLE")
     
 
-def solveASP(file_path, add_to_top = [""], tmin = -1):
+def solveASP(file_path, add_plan = [""], add_obs = [""], tmin = -1):
     """
     This function takes in an ansolute or relativ path to a .pl file with and answer set program. This programm will be read and solved using clingo.
     Retuns a list of lists with the answer sets.
@@ -52,7 +52,11 @@ def solveASP(file_path, add_to_top = [""], tmin = -1):
         asp_program = file.read()
     
     ctl = clingo.Control()
-    for item in add_to_top:
+
+    for item in add_plan:
+        ctl.add("base", [], item)
+
+    for item in add_obs:
         ctl.add("base", [], item)
     
     if tmin != -1:
